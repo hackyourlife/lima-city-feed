@@ -1,0 +1,10 @@
+Options -Indexes -MultiViews
+
+RewriteEngine On
+RewriteRule ^board\/(.*)\.xml$ board.php?n=$1 [L]
+RewriteRule ^(.*)\/newest\.xml$ board.php?n=$1 [L]
+RewriteRule ^(.*)\.xml$ $1.php [L]
+
+<FilesMatch "^(sid|password)$">
+	Deny from all
+</FilesMatch>
