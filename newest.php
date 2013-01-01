@@ -165,7 +165,10 @@ foreach($doc->find('newest > thread') as $thread) {
 	$summary->appendChild($summarytype);
 
 	if($content) {
-		$content = $xml->createElement('content', $content);
+		$node = $xml->createDocumentFragment();
+		$node->appendXML($content);
+		$content = $xml->createElement('content');
+		$content->appendChild($node);
 		$contenttype = $xml->createAttribute('type');
 		$contenttype->appendChild($xml->createTextNode('xhtml'));
 		$content->appendChild($contenttype);

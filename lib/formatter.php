@@ -6,19 +6,25 @@ function formatpost($content) {
 	$contiguous_br = false;
 	foreach($content->children() as $element) {
 		$pqelement = pq($element);
-		if($element->tagName != 'br')
+		switch($element->tagName) {
+		case 'br':
+		case 'blockquote':
+		case 'code':
+			break;
+		default:
 			$contiguous_br = false;
+		}
 		switch($element->tagName) {
 		case 'text':
 			$html .= $pqelement->html();
-			$text .= $pqelement->html(); // html_entity_decode() ?
+			$text .= str_replace("\n", '', $pqelement->html()); // html_entity_decode() ?
 			break;
 		case 'br':
-			if($contiguous_br)
-				break;
-			$contiguous_br = true;
-			$html .= '<br />';
-			$text .= "\n";
+			if(!$contiguous_br) {
+				$contiguous_br = true;
+				$html .= '<br />';
+				$text .= "\n";
+			}
 			break;
 		case 'link':
 			$url = $pqelement->attr('url');
@@ -35,7 +41,8 @@ function formatpost($content) {
 				$text .= $t['text'];
 			} else {
 				$html .= '<p>[Code]</p>';
-				$text .= ' [Code] ';
+				$text .= " [Code]\n";
+				$contiguous_br = true;
 			}
 			break;
 		case 'img':
@@ -62,7 +69,8 @@ function formatpost($content) {
 			break;
 		case 'blockquote':
 			$html .= "<p><i>Zitat</i></p>";
-			$text .= " <Zitat> \n";
+			$text .= " <Zitat>\n";
+			$contiguous_br = true;
 			break;
 		default:
 			break;
