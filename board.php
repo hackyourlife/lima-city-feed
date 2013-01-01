@@ -18,7 +18,7 @@ if(!file_exists('password'))
 $rpcurl = 'http://limaapi.dauerstoned-clan.de/dev/rpc/xmlrpc.php';
 $credentials = array(
 	'username'	=> 'feed',
-	'password'	=> file_get_contents('password')
+	'password'	=> trim(file_get_contents('password'))
 );
 
 $sid = file_get_contents('sid');

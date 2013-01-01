@@ -2,6 +2,7 @@
 
 require_once('phpQuery/phpQuery.php');
 require_once('lib/curl.php');
+require_once('lib/formatter.php');
 
 header('content-type: application/atom+xml; charset=utf-8');
 //header('cache-control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -12,13 +13,26 @@ header('cache-control');
 header('expires:');
 header('X-Moz-Is-Feed: 1');
 
+$PREFIX = 'cache/';
+
+// use cache if available
+if(file_exists("{$PREFIX}last-update") && file_exists("{$PREFIX}cache")) {
+	$update = file_get_contents("{$PREFIX}last-update");
+	$now = time();
+	// up to date?
+	if(($now - $update) < (2 * 60)) { // 2 minutes
+		echo(file_get_contents("{$PREFIX}cache"));
+		exit();
+	}
+}
+
 if(!file_exists('password'))
 	exit();
 
 $rpcurl = 'http://limaapi.dauerstoned-clan.de/dev/rpc/xmlrpc.php';
 $credentials = array(
 	'username'	=> 'feed',
-	'password'	=> file_get_contents('password')
+	'password'	=> trim(file_get_contents('password'))
 );
 
 $xml = new DOMDocument('1.0', 'utf-8');
@@ -79,6 +93,15 @@ if($doc->find('notloggedin')->count() != 0) {
 $lastupdate = DateTime::createFromFormat('H:i, d.m.Y', $doc->find('newest > thread:first-child date')->html());
 $root->appendChild($xml->createElement('updated', $lastupdate->format(DATE_ATOM)));
 
+if(file_exists("{$PREFIX}post-last-update") && file_exists("{$PREFIX}cache")) {
+	$update = file_get_contents("{$PREFIX}post-last-update");
+	if($update == $lastupdate->format('U')) { // no changes since last update
+		echo(file_get_contents("{$PREFIX}cache"));
+		exit();
+	}
+}
+
+$n = 0;
 foreach($doc->find('newest > thread') as $thread) {
 	$thread = pq($thread);
 	$title = $thread->find('name')->html();
@@ -89,8 +112,47 @@ foreach($doc->find('newest > thread') as $thread) {
 	$date = DateTime::createFromFormat('H:i, d.m.Y', $thread->find('date')->html());
 
 	$summary = "$board / $author";
+	$content = false;
 	$updated = $date->format(DATE_ATOM);
 
+	if($n++ < 10) {
+		// load post content
+		// 1) get post position in thread (page)
+		$data = array(
+			'proc'	=> 'getPostThread',
+			'args'	=> json_encode(array('id' => $postid))
+		);
+		$postinfo = phpQuery::newDocument(post_request($rpcurl, $data));
+		$postpage = $postinfo->find('page')->html();
+		$postperpage = $postinfo->find('perpage')->html();
+
+		// 2) load post content
+		$data = array(
+			'proc'	=> 'getThread',
+			'args'	=> json_encode(array(
+				'sid'		=> $sid,
+				'url'		=> $url,
+				'page'		=> $postpage,
+				'perpage'	=> $postperpage
+			))
+		);
+		$threaddata = phpQuery::newDocument(post_request($rpcurl, $data));
+
+		foreach($threaddata->find('id') as $id) {
+			$id = pq($id);
+			if($id->html() == $postid) { // post found
+				$content = $id->parent()->find('> content');
+				$formatted = formatpost($content);
+				$summary = $formatted['text'];
+				$content = $formatted['html'];
+				$boardhtml = htmlentities($board);
+				$authorhtml = htmlentities($author);
+				$summary = trim($summary) . " ($boardhtml / $authorhtml)";
+				$content = trim($content) . " ($board / $author)";
+				break;
+			}
+		}
+	}
 
 	$link = $xml->createElement('link');
 	$linkhref = $xml->createAttribute('href');
@@ -99,8 +161,15 @@ foreach($doc->find('newest > thread') as $thread) {
 
 	$summary = $xml->createElement('summary', $summary);
 	$summarytype = $xml->createAttribute('type');
-	$summarytype->appendChild($xml->createTextNode('xhtml'));
+	$summarytype->appendChild($xml->createTextNode('text'));
 	$summary->appendChild($summarytype);
+
+	if($content) {
+		$content = $xml->createElement('content', $content);
+		$contenttype = $xml->createAttribute('type');
+		$contenttype->appendChild($xml->createTextNode('xhtml'));
+		$content->appendChild($contenttype);
+	}
 
 	$entry = $xml->createElement('entry');
 	$entry->appendChild($xml->createElement('title', $title));
@@ -109,9 +178,14 @@ foreach($doc->find('newest > thread') as $thread) {
 	//$entry->appendChild($xml->createElement('published', $updated));
 	$entry->appendChild($xml->createElement('updated', $updated));
 	$entry->appendChild($summary);
+	if($content)
+		$entry->appendChild($content);
 	$root->appendChild($entry);
 }
 
 $xml->appendChild($root);
 echo($xml->saveXML());
+file_put_contents("{$PREFIX}last-update", time());
+file_put_contents("{$PREFIX}post-last-update", $lastupdate->format('U'));
+file_put_contents("{$PREFIX}cache", $xml->saveXML());
 exit();
