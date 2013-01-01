@@ -91,6 +91,12 @@ if($doc->find('notloggedin')->count() != 0) {
 }
 
 $lastupdate = DateTime::createFromFormat('H:i, d.m.Y', $doc->find('newest > thread:first-child date')->html());
+foreach($doc->find('newest > thread > date') as $t) {
+	$T = DateTime::createFromFormat('H:i, d.m.Y', pq($t)->html());
+	if($T->format('U') > $lastupdate->format('U'))
+		$lastupdate = $T;
+}
+
 $root->appendChild($xml->createElement('updated', $lastupdate->format(DATE_ATOM)));
 
 if(file_exists("{$PREFIX}post-last-update") && file_exists("{$PREFIX}cache")) {
