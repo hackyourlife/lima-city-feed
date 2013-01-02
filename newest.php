@@ -29,7 +29,7 @@ if(file_exists("{$PREFIX}last-update") && file_exists("{$PREFIX}cache")) {
 if(!file_exists('password'))
 	exit();
 
-$rpcurl = 'http://limaapi.dauerstoned-clan.de/dev/rpc/xmlrpc.php';
+$rpcurl = 'http://limaapi.dauerstoned-clan.de/rpc/xmlrpc.php';
 $credentials = array(
 	'username'	=> 'feed',
 	'password'	=> trim(file_get_contents('password'))
