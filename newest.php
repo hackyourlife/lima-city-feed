@@ -45,7 +45,7 @@ $root->appendChild($xml->createElement('subtitle', 'Aktuelle Themen auf lima-cit
 
 $link = $xml->createElement('link');
 $linkhref = $xml->createAttribute('href');
-$linkhref->appendChild($xml->createTextNode('https://www.lima-city.de'));
+$linkhref->appendChild($xml->createTextNode('https://www.lima-city.de/'));
 $link->appendChild($linkhref);
 $root->appendChild($link);
 
@@ -153,8 +153,8 @@ foreach($doc->find('newest > thread') as $thread) {
 				$content = $formatted['html'];
 				$boardhtml = htmlentities($board);
 				$authorhtml = htmlentities($author);
-				$summary = trim($summary) . " ($boardhtml / $authorhtml)";
-				$content = trim($content) . " ($board / $author)";
+				$summary = trim($summary) . " ($board / $author)";
+				$content = trim($content) . " ($boardhtml / $authorhtml)";
 				break;
 			}
 		}
@@ -165,7 +165,7 @@ foreach($doc->find('newest > thread') as $thread) {
 	$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/board/action:jump/$postid"));
 	$link->appendChild($linkhref);
 
-	$summary = $xml->createElement('summary', $summary);
+	$summary = $xml->createElement('summary', htmlentities($summary));
 	$summarytype = $xml->createAttribute('type');
 	$summarytype->appendChild($xml->createTextNode('text'));
 	$summary->appendChild($summarytype);
@@ -173,8 +173,11 @@ foreach($doc->find('newest > thread') as $thread) {
 	if($content) {
 		$node = $xml->createDocumentFragment();
 		$node->appendXML($content);
+		//$div = $xml->createElementNS('http://www.w3.org/1999/xhtml', 'div');
+		$div = $xml->createElement('div');
+		$div->appendChild($node);
 		$content = $xml->createElement('content');
-		$content->appendChild($node);
+		$content->appendChild($div);
 		$contenttype = $xml->createAttribute('type');
 		$contenttype->appendChild($xml->createTextNode('xhtml'));
 		$content->appendChild($contenttype);
