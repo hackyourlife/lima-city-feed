@@ -62,7 +62,7 @@ $link->appendChild($linkhref);
 $root->appendChild($link);
 
 $root->appendChild($xml->createElement('icon', 'https://www.lima-city.de/favicon.ico'));
-$root->appendChild($xml->createElement('id', 'https://www.lima-city.de'));
+$root->appendChild($xml->createElement('id', 'https://www.lima-city.de/'));
 
 $author = $xml->createElement('author');
 $author->appendChild($xml->createElement('name', 'lima-city'));
@@ -111,10 +111,10 @@ $n = 0;
 foreach($doc->find('newest > thread') as $thread) {
 	$thread = pq($thread);
 	$title = $thread->find('name')->html();
-	$author = $thread->find('user')->html();
-	$url = $thread->find('url')->html();
-	$postid = $thread->find('postid')->html();
-	$board = $thread->find('forum')->html();
+	$author = $thread->find('user')->text();
+	$url = $thread->find('url')->text();
+	$postid = $thread->find('postid')->text();
+	$board = $thread->find('forum')->text();
 	$date = DateTime::createFromFormat('H:i, d.m.Y', $thread->find('date')->html());
 
 	$summary = "$board / $author";
@@ -165,7 +165,9 @@ foreach($doc->find('newest > thread') as $thread) {
 	$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/board/action:jump/$postid"));
 	$link->appendChild($linkhref);
 
-	$summary = $xml->createElement('summary', htmlentities($summary));
+	$summaryxml = $xml->createElement('summary');
+	$summaryxml->appendChild($xml->createCDATASection($summary));
+	$summary = $summaryxml;
 	$summarytype = $xml->createAttribute('type');
 	$summarytype->appendChild($xml->createTextNode('text'));
 	$summary->appendChild($summarytype);
