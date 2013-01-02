@@ -76,7 +76,7 @@ $root->appendChild($xml->createElement('subtitle', "Aktuelle Themen auf lima-cit
 
 $link = $xml->createElement('link');
 $linkhref = $xml->createAttribute('href');
-$linkhref->appendChild($xml->createTextNode('https://www.lima-city.de'));
+$linkhref->appendChild($xml->createTextNode('https://www.lima-city.de/'));
 $link->appendChild($linkhref);
 $root->appendChild($link);
 
@@ -93,7 +93,7 @@ $link->appendChild($linkhref);
 $root->appendChild($link);
 
 $root->appendChild($xml->createElement('icon', 'https://www.lima-city.de/favicon.ico'));
-$root->appendChild($xml->createElement('id', 'https://www.lima-city.de'));
+$root->appendChild($xml->createElement('id', 'https://www.lima-city.de/'));
 
 $author = $xml->createElement('author');
 $author->appendChild($xml->createElement('name', 'lima-city'));
@@ -116,13 +116,13 @@ foreach($doc->find('result > thread') as $thread) {
 
 	$link = $xml->createElement('link');
 	$linkhref = $xml->createAttribute('href');
-	//$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/board/action:jump/$postid"));
-	$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/thread/$url"));
+	$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/board/action:jump/$postid"));
+	//$linkhref->appendChild($xml->createTextNode("https://www.lima-city.de/thread/$url"));
 	$link->appendChild($linkhref);
 
 	$summary = $xml->createElement('summary', $summary);
 	$summarytype = $xml->createAttribute('type');
-	$summarytype->appendChild($xml->createTextNode('xhtml'));
+	$summarytype->appendChild($xml->createTextNode('text'));
 	$summary->appendChild($summarytype);
 
 	$entry = $xml->createElement('entry');
