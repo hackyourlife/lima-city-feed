@@ -11,7 +11,7 @@ header('X-Moz-Is-Feed: 1');
 $rpcurl = 'http://limaapi.dauerstoned-clan.de/rpc/xmlrpc.php';
 $credentials = array(
 	'username'	=> 'feed',
-	'password'	=> 'mTtjYmLw1rFPtlpSwmcOZfPDidOCggg1'
+	'password'	=> trim(file_get_contents('password'))
 );
 
 $sid = file_get_contents('sid');
