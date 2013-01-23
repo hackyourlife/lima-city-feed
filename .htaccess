@@ -6,6 +6,7 @@ RewriteEngine On
 RewriteRule ^board\/(.*)\.xml$ board.php?n=$1 [L]
 RewriteRule ^(.*)\/newest\.xml$ board.php?n=$1 [L]
 RewriteRule ^(.*)\.xml$ $1.php [L]
+RewriteRule ^showdb$ showdb.php [L]
 
 <FilesMatch "^(sid|password|mysql)$">
 	Order allow,deny
