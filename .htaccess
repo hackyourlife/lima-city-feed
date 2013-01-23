@@ -1,11 +1,13 @@
 Options -Indexes -MultiViews
 
+php_flag display_errors on
+
 RewriteEngine On
 RewriteRule ^board\/(.*)\.xml$ board.php?n=$1 [L]
 RewriteRule ^(.*)\/newest\.xml$ board.php?n=$1 [L]
 RewriteRule ^(.*)\.xml$ $1.php [L]
 
-<FilesMatch "^(sid|password)$">
+<FilesMatch "^(sid|password|mysql)$">
 	Order allow,deny
 	Deny from all
 </FilesMatch>

@@ -3,6 +3,8 @@
 require_once('phpQuery/phpQuery.php');
 require_once('lib/curl.php');
 
+include('lib/db.php');
+
 header('pragma:');
 header('cache-control');
 header('expires:');

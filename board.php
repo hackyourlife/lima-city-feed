@@ -3,6 +3,8 @@
 require_once('phpQuery/phpQuery.php');
 require_once('lib/curl.php');
 
+include('lib/db.php');
+
 header('content-type: application/atom+xml; charset=utf-8');
 //header('cache-control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
 //header('pragma: no-cache');
