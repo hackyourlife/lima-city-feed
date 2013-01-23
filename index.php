@@ -46,6 +46,7 @@ foreach($doc->find('board') as $board) {
 }
 
 echo(<<< ETX
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>lima-city Feeds</title>
@@ -55,11 +56,9 @@ echo(<<< ETX
 		<h2>Neueste Themen auf lima-city</h2>
 		<p><a href="http://feed.lima-city.de/newest.xml">http://feed.lima-city.de/newest.xml</a></p>
 		<h2>Einzelne Foren</h2>
-		<p>
-			<dl>
+		<dl>
 $links
-			</dl>
-		</p>
+		</dl>
 	</body>
 </html>
 ETX
