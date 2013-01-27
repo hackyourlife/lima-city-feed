@@ -20,6 +20,10 @@ if($link) {
 	$content .= '</tbody></table>';
 }
 
+header('pragma:');
+header('cache-control:');
+header('expires:');
+
 echo(<<< ETX
 <!DOCTYPE html>
 <html>

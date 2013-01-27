@@ -6,9 +6,9 @@ require_once('lib/curl.php');
 include('lib/db.php');
 
 header('pragma:');
-header('cache-control');
+header('cache-control:');
 header('expires:');
-header('X-Moz-Is-Feed: 1');
+header('content-type: text/html; charset=utf-8');
 
 $rpcurl = 'http://limaapi.dauerstoned-clan.de/rpc/xmlrpc.php';
 $credentials = array(
@@ -52,9 +52,17 @@ echo(<<< ETX
 <html>
 	<head>
 		<title>lima-city Feeds</title>
+		<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+		<meta http-equiv="content-Type" content="text/html; charset=utf-8" />
+		<meta property="og:title" content="lima-city feeds" />
+		<meta property="og:url" content="http://feed.lima-city.de/" />
+		<meta property="og:image" content="http://feed.lima-city.de/feed.png" />
+		<meta property="og:site_name" content="feed" />
+		<meta property="og:description" content="lima-city Atom Feeds: Neuigkeiten auf lima-city" />
+		<meta name="description" content="lima-city Atom Feeds: Neuigkeiten auf lima-city" />
 	</head>
 	<body>
-		<h1>Atom-Feeds f&uuml;r lima-city</h1>
+		<h1>Atom-Feeds für lima-city</h1>
 		<h2>Neueste Themen auf lima-city</h2>
 		<p><a href="http://feed.lima-city.de/newest.xml">http://feed.lima-city.de/newest.xml</a></p>
 		<h2>Einzelne Foren</h2>

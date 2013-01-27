@@ -11,7 +11,7 @@ header('content-type: application/atom+xml; charset=utf-8');
 //header('pragma: no-cache');
 //header('expires: Thu, 19 Nov 1981 08:52:00 GMT');
 header('pragma:');
-header('cache-control');
+header('cache-control:');
 header('expires:');
 header('X-Moz-Is-Feed: 1');
 
