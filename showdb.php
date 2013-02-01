@@ -6,7 +6,7 @@ $content = 'No entries';
 $link = @mysql_connect($data->hostname, $data->username, $data->password);
 if($link) {
 	$content = '<table><thead><tr><th>TIME</th><th>UA</th><th>URI</th><th>REFERER</th></tr></thead><tbody>';
-	$query = "SELECT `ua`, `uri`, `referer`, DATE_FORMAT(`time`, '%d.%m.%Y %H:%i:%s') AS `time` FROM `visitors` ORDER BY `time` DESC LIMIT 100";
+	$query = "SELECT `ua`, `uri`, `referer`, DATE_FORMAT(`time`, '%d.%m.%Y %H:%i:%s') AS `time` FROM `visitors` ORDER BY `visitors`.`time` DESC LIMIT 100";
 	mysql_select_db($data->database);
 	$result = mysql_query($query);
 	while($row = mysql_fetch_object($result)) {
